@@ -10,9 +10,11 @@ async function connect(){
         database: 'crud',
         password: '12345678'
     });
+
     console.log("Conectou no MySQL!");
     global.connection = connection;
     return connection;
+}
 
     async function selectCustomers(){
         const conn = await connect();
@@ -22,10 +24,22 @@ async function connect(){
 
     async function insertCustomer(customer){
         const conn = await connect();
-        const sql = 'INSERT INTO clientes(nome,idade,uf) VALUES (?,?,?);';
+        const sql = 'INSERT INTO clientes(nome,idade,estado) VALUES (?,?,?);';
         const values = [customer.nome, customer.idade, customer.estado];
         return await conn.query(sql, values);
     }
+
+    async function updateCustomer(id, customer){
+        const conn = await connect();
+        const sql = 'UPDATE clientes SET nome=?, idade=?, estado=? WHERE id=?';
+        const values = [customer.nome, customer.idade, customer.estado, id];
+        return await conn.query(sql, values);
+    }
+
+    async function deleteCustomer(id){
+        const conn = await connect();
+        const sql = 'DELETE FROM clientes where id=?;';
+        return await conn.query(sql, [id]);
+    }  
     
-    module.exports = {selectCustomers}
-}
+module.exports = {selectCustomers, deleteCustomer, updateCustomer, insertCustomer}
